@@ -3,6 +3,7 @@ package com.lazerycode.jmeter.testrunner;
 import com.lazerycode.jmeter.configuration.JMeterArgumentsArray;
 import com.lazerycode.jmeter.configuration.JMeterProcessJVMSettings;
 import com.lazerycode.jmeter.configuration.RemoteConfiguration;
+import nl.stokpop.eventscheduler.EventScheduler;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.utils.io.DirectoryScanner;
@@ -41,6 +42,7 @@ public class TestManager {
     private String runtimeJarName;
     private File reportDirectory;
     private boolean generateReports = false;
+    private EventScheduler eventScheduler;
 
     private static final int EXIT_CODE_FOR_JVM_KILLED = 143;
 
@@ -135,6 +137,12 @@ public class TestManager {
         return this;
     }
 
+    public TestManager setEventScheduler(EventScheduler eventScheduler) {
+        this.eventScheduler = eventScheduler;
+
+        return this;
+    }
+
     JMeterArgumentsArray getBaseTestArgs() {
         return baseTestArgs;
     }
@@ -190,32 +198,54 @@ public class TestManager {
      * @throws MojoExecutionException MojoExecutionException
      */
     public List<String> executeTests() throws MojoExecutionException {
+
+        boolean abortEventScheduler = false;
+
+        if (eventScheduler != null) {
+            eventScheduler.startSession();
+        }
+
         JMeterArgumentsArray thisTestArgs = baseTestArgs;
         List<String> tests = generateTestList();
         List<String> results = new ArrayList<>();
-        for (String file : tests) {
-            if (generateReports) {
-                File outputReportFolder = new File(reportDirectory + File.separator + FilenameUtils.removeExtension(file));
-                LOGGER.info("Will generate HTML report in {}", outputReportFolder.getAbsolutePath());
-                if (outputReportFolder.exists() || outputReportFolder.mkdirs()) {
-                    thisTestArgs.setReportsDirectory(outputReportFolder.getAbsolutePath());
-                } else {
-                    throw new MojoExecutionException("Unable to create report output folder:" + outputReportFolder.getAbsolutePath());
+        try {
+            for (String file : tests) {
+                if (generateReports) {
+                    File outputReportFolder = new File(reportDirectory + File.separator + FilenameUtils.removeExtension(file));
+                    LOGGER.info("Will generate HTML report in {}", outputReportFolder.getAbsolutePath());
+                    if (outputReportFolder.exists() || outputReportFolder.mkdirs()) {
+                        thisTestArgs.setReportsDirectory(outputReportFolder.getAbsolutePath());
+                    } else {
+                        throw new MojoExecutionException("Unable to create report output folder:" + outputReportFolder.getAbsolutePath());
+                    }
+                }
+                if ((remoteServerConfiguration.isStartServersBeforeTests() && tests.get(0).equals(file)) || remoteServerConfiguration.isStartAndStopServersForEachTest()) {
+                    thisTestArgs.setRemoteStart();
+                    thisTestArgs.setRemoteStartServerList(remoteServerConfiguration.getServerList());
+                }
+                if ((remoteServerConfiguration.isStopServersAfterTests() && tests.get(tests.size() - 1).equals(file)) || remoteServerConfiguration.isStartAndStopServersForEachTest()) {
+                    thisTestArgs.setRemoteStop();
+                }
+                results.add(executeSingleTest(new File(testFilesDirectory, file), thisTestArgs));
+                try {
+                    TimeUnit.SECONDS.sleep(postTestPauseInSeconds);
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
                 }
             }
-            if ((remoteServerConfiguration.isStartServersBeforeTests() && tests.get(0).equals(file)) || remoteServerConfiguration.isStartAndStopServersForEachTest()) {
-                thisTestArgs.setRemoteStart();
-                thisTestArgs.setRemoteStartServerList(remoteServerConfiguration.getServerList());
+        } catch(Throwable e) {
+            abortEventScheduler = true;
+            throw  e;
+        } finally {
+            if (eventScheduler != null) {
+                if (abortEventScheduler) {
+                    eventScheduler.abortSession();
+                }
             }
-            if ((remoteServerConfiguration.isStopServersAfterTests() && tests.get(tests.size() - 1).equals(file)) || remoteServerConfiguration.isStartAndStopServersForEachTest()) {
-                thisTestArgs.setRemoteStop();
-            }
-            results.add(executeSingleTest(new File(testFilesDirectory, file), thisTestArgs));
-            try {
-                TimeUnit.SECONDS.sleep(postTestPauseInSeconds);
-            } catch (InterruptedException ignored) {
-                Thread.currentThread().interrupt();
-            }
+        }
+
+        if (eventScheduler != null) {
+            eventScheduler.stopSession();
         }
 
         return results;
@@ -251,6 +281,9 @@ public class TestManager {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 LOGGER.info("Shutdown detected, destroying JMeter process...");
                 LOGGER.info(" ");
+                if (eventScheduler != null && !eventScheduler.isSessionStopped()) {
+                    eventScheduler.abortSession();
+                }
                 process.destroy();
             }));
             try (InputStreamReader isr = new InputStreamReader(process.getInputStream());
@@ -303,4 +336,5 @@ public class TestManager {
 
         return Arrays.asList(scanner.getIncludedFiles());
     }
+
 }

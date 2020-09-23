@@ -13,13 +13,16 @@
         <maven>${required.maven.version}</maven>
     </prerequisites>
 
-    <groupId>com.lazerycode.jmeter</groupId>
-    <artifactId>jmeter-maven-plugin</artifactId>
-    <version>${revision}</version>
+    <groupId>nl.stokpop</groupId>
+    <artifactId>events-jmeter-maven-plugin</artifactId>
+    <version>3.5.0-events-1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
-    <name>JMeter Maven Plugin</name>
-    <description>A plugin to allow you to run Apache JMeter tests with Maven.</description>
+    <name>Events JMeter Maven Plugin</name>
+    <description>
+        A plugin to allow you to run Apache JMeter tests with Maven.
+        Forked from jmeter-maven-plugin 3.5.0, this version has test events integration.
+    </description>
     <url>https://jmeter.lazerycode.com</url>
 
     <properties>
@@ -51,6 +54,7 @@
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <pgp-maven-plugin.version>1.1</pgp-maven-plugin.version>
+        <event-scheduler.version>2.2.1</event-scheduler.version>
     </properties>
 
     <licenses>
@@ -253,6 +257,11 @@
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <version>${json-path.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.stokpop</groupId>
+            <artifactId>event-scheduler</artifactId>
+            <version>${event-scheduler.version}</version>
         </dependency>
         <!--Test Dependencies-->
         <dependency>
