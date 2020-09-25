@@ -67,9 +67,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:jmeter-maven-plugin/jmeter-maven-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:jmeter-maven-plugin/jmeter-maven-plugin.git</developerConnection>
-        <url>https://github.com/jmeter-maven-plugin/jmeter-maven-plugin</url>
+        <connection>scm:git:git@github.com:stokpop/events-jmeter-maven-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:stokpop/events-jmeter-maven-plugin.git</developerConnection>
+        <url>https://github.com/stokpop/events-jmeter-maven-plugin</url>
         <tag>HEAD</tag>
     </scm>
 
