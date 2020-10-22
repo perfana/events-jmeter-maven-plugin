@@ -54,7 +54,7 @@
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <pgp-maven-plugin.version>1.1</pgp-maven-plugin.version>
-        <event-scheduler.version>2.2.1</event-scheduler.version>
+        <event-scheduler.version>2.2.2</event-scheduler.version>
     </properties>
 
     <licenses>
