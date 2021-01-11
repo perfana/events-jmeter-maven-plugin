@@ -4,16 +4,14 @@ import com.lazerycode.jmeter.json.TestConfigurationWrapper;
 import com.lazerycode.jmeter.testrunner.TestManager;
 import nl.stokpop.eventscheduler.EventScheduler;
 import nl.stokpop.eventscheduler.EventSchedulerBuilder;
-import nl.stokpop.eventscheduler.api.*;
+import nl.stokpop.eventscheduler.api.EventLogger;
+import nl.stokpop.eventscheduler.api.config.EventSchedulerConfig;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.File;
-import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Goal that runs jmeter based on configuration defined in your pom.<br>
@@ -47,8 +45,8 @@ public class RunJMeterMojo extends AbstractJMeterMojo {
         jMeterProcessJVMSettings.setHeadlessDefaultIfRequired();
         copyFilesInTestDirectory(testFilesDirectory, testFilesBuildDirectory);
 
-        EventScheduler eventScheduler = eventSchedulerEnabled
-            ? createEventScheduler()
+        EventScheduler eventScheduler = (eventSchedulerConfig != null && eventSchedulerConfig.isSchedulerEnabled())
+            ? createEventScheduler(eventSchedulerConfig, getLog())
             : null;
 
         TestManager jMeterTestManager = new TestManager()
@@ -74,73 +72,43 @@ public class RunJMeterMojo extends AbstractJMeterMojo {
         testConfig.writeResultFilesConfigTo(testConfigFile);
     }
 
-    private EventScheduler createEventScheduler() {
+    private static EventScheduler createEventScheduler(EventSchedulerConfig eventSchedulerConfig, Log log) {
 
         EventLogger logger = new EventLogger() {
             @Override
             public void info(String message) {
-                getLog().info(message);
+                log.info(message);
             }
 
             @Override
             public void warn(String message) {
-                getLog().warn(message);
+                log.warn(message);
             }
 
             @Override
             public void error(String message) {
-                getLog().error(message);
+                log.error(message);
             }
 
             @Override
             public void error(String message, Throwable throwable) {
-                getLog().error(message, throwable);
+                log.error(message, throwable);
             }
 
             @Override
             public void debug(final String message) {
-                if (isDebugEnabled()) getLog().debug(message);
+                if (isDebugEnabled()) log.debug(message);
             }
 
             @Override
             public boolean isDebugEnabled() {
-                return eventDebugEnabled;
+                return eventSchedulerConfig.isDebugEnabled();
             }
 
         };
 
-        // there might be null values for empty <tag></tag>
-        List<String> filteredEventTags = eventTags.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        return EventSchedulerBuilder.of(eventSchedulerConfig, logger);
 
-        TestContext testContext = new TestContextBuilder()
-            .setTestRunId(eventTestRunId)
-            .setSystemUnderTest(eventSystemUnderTest)
-            .setVersion(eventVersion)
-            .setWorkload(eventWorkload)
-            .setTestEnvironment(eventTestEnvironment)
-            .setCIBuildResultsUrl(eventBuildResultsUrl)
-            .setRampupTimeInSeconds(eventRampupTimeInSeconds)
-            .setConstantLoadTimeInSeconds(eventConstantLoadTimeInSeconds)
-            .setAnnotations(eventAnnotations)
-            .setTags(filteredEventTags)
-            .setVariables(eventVariables)
-            .build();
-
-        EventSchedulerSettings settings = new EventSchedulerSettingsBuilder()
-            .setKeepAliveInterval(Duration.ofSeconds(eventKeepAliveIntervalInSeconds))
-            .build();
-
-        EventSchedulerBuilder eventSchedulerBuilder = new EventSchedulerBuilder()
-            .setEventSchedulerSettings(settings)
-            .setTestContext(testContext)
-            .setAssertResultsEnabled(eventSchedulerEnabled)
-            .setCustomEvents(eventScheduleScript)
-            .setLogger(logger);
-
-        if (events != null) {
-            events.forEach(eventSchedulerBuilder::addEvent);
-        }
-
-        return eventSchedulerBuilder.build();
     }
+
 }

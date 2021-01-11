@@ -5,6 +5,7 @@ import com.lazerycode.jmeter.configuration.JMeterProcessJVMSettings;
 import com.lazerycode.jmeter.configuration.ProxyConfiguration;
 import com.lazerycode.jmeter.configuration.RemoteConfiguration;
 import com.lazerycode.jmeter.json.TestConfigurationWrapper;
+import nl.stokpop.eventscheduler.api.config.EventSchedulerConfig;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -19,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * JMeter Maven plugin.
@@ -208,114 +207,9 @@ public abstract class AbstractJMeterMojo extends AbstractMojo {
     protected String selectedConfiguration;
 
     //------------------------------------------------------------------------------------------------------------------
-    /**
-     * EventScheduler: enable or disable calls to EventScheduler, default is enabled
-     */
-    @Parameter(defaultValue = "true")
-    protected boolean eventSchedulerEnabled;
 
-    /**
-     * EventScheduler: list of custom event definitions
-     */
-    @Parameter
-    protected Map<String, Properties> events;
-
-    /**
-     * EventScheduler: schedule script with events, one event per line, such as: PT1M|scale-down|replicas=2
-     */
-    @Parameter
-    protected String eventScheduleScript;
-
-    /**
-     * EventScheduler: name of system under test.
-     */
-    @Parameter(defaultValue = "UNKNOWN_SYSTEM_UNDER_TEST")
-    protected String eventSystemUnderTest;
-
-    /**
-     * EventScheduler: work load for this test, for instance load or stress
-     */
-    @Parameter(defaultValue = "UNKNOWN_WORKLOAD")
-    protected String eventWorkload;
-
-    /**
-     * EventScheduler: environment for this test.
-     */
-    @Parameter(defaultValue = "UNKNOWN_TEST_ENVIRONMENT")
-    protected String eventTestEnvironment;
-
-    /**
-     * EventScheduler: name of product that is being tested.
-     */
-    @Parameter(defaultValue = "ANONYMOUS_PRODUCT")
-    protected String eventProductName;
-
-    /**
-     * EventScheduler: name of performance dashboard for this test.
-     */
-    @Parameter(defaultValue = "ANONYMOUS_DASHBOARD")
-    protected String eventDashboardName;
-
-    /**
-     * EventScheduler: test run id.
-     */
-    @Parameter(defaultValue = "ANONYMOUS_TEST_ID")
-    protected String eventTestRunId;
-
-    /**
-     * EventScheduler: build results url is where the build results of this load test can be found.
-     */
-    @Parameter
-    protected String eventBuildResultsUrl;
-
-    /**
-     * EventScheduler: the version number of the system under test.
-     */
-    @Parameter(defaultValue = "1.0.0-SNAPSHOT")
-    protected String eventVersion;
-
-    /**
-     * EventScheduler: test rampup time in seconds.
-     */
-    @Parameter(defaultValue = "30")
-    protected String eventRampupTimeInSeconds;
-
-    /**
-     * EventScheduler: test constant load time in seconds.
-     */
-    @Parameter(defaultValue = "570")
-    protected String eventConstantLoadTimeInSeconds;
-
-    /**
-     * EventScheduler: test run annotations passed via environment variable
-     */
-    @Parameter
-    protected String eventAnnotations;
-
-    /**
-     * EventScheduler: test run variables passed via environment variable
-     */
-    @Parameter
-    protected Properties eventVariables;
-
-    /**
-     * EventScheduler: test run comma separated tags via environment variable
-     */
-    @Parameter
-    protected List<String> eventTags;
-
-    /**
-     * EventScheduler: enable debug logging for events. Note: maven -X debug should
-     * also be active.
-     */
-    @Parameter
-    protected boolean eventDebugEnabled;
-
-    /**
-     * EventScheduler: how often is keep alive event fired. Default is 30 seconds.
-     */
-    @Parameter(defaultValue = "30")
-    protected Integer eventKeepAliveIntervalInSeconds;
+    @Parameter(required = true)
+    EventSchedulerConfig eventSchedulerConfig;
 
     //==================================================================================================================
 
