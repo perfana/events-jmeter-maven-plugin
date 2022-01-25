@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -14,13 +15,13 @@
 
     <groupId>nl.stokpop</groupId>
     <artifactId>events-jmeter-maven-plugin</artifactId>
-    <version>3.1.2-events-2.1-SNAPSHOT</version>
+    <version>3.5.0-events-1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Events JMeter Maven Plugin</name>
     <description>
         A plugin to allow you to run Apache JMeter tests with Maven.
-        Forked from jmeter-maven-plugin 3.1.2, this version has test events integration.
+        Forked from jmeter-maven-plugin 3.5.0, this version has test events integration.
     </description>
     <url>https://jmeter.lazerycode.com</url>
 
@@ -28,27 +29,29 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <required.maven.version>3.5.2</required.maven.version>
+        <revision>DEV-SNAPSHOT</revision>
         <supported.java.version>1.8</supported.java.version>
 
         <!--Dependency versions-->
-        <assertj-core.version>3.15.0</assertj-core.version>
-        <commons-io.version>2.6</commons-io.version>
-        <jackson.version>2.11.0</jackson.version>
-        <json-path.version>2.4.0</json-path.version>
-        <junit.version>4.13.1</junit.version>
-        <logback.version>1.2.3</logback.version>
-        <maven-resolver.version>1.4.2</maven-resolver.version>
-        <mockito-core.version>2.28.2</mockito-core.version>
-        <slf4j-api.version>1.7.30</slf4j-api.version>
+        <assertj-core.version>3.21.0</assertj-core.version>
+        <commons-io.version>2.11.0</commons-io.version>
+        <jackson.version>2.13.0</jackson.version>
+        <json-path.version>2.6.0</json-path.version>
+        <junit.version>4.13.2</junit.version>
+        <logback.version>1.2.9</logback.version>
+        <maven-resolver.version>1.7.2</maven-resolver.version>
+        <mockito-core.version>4.0.0</mockito-core.version>
+        <slf4j-api.version>1.7.32</slf4j-api.version>
 
         <!--Plugin versions-->
-        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-        <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
-        <maven-invoker-plugin.version>3.2.0</maven-invoker-plugin.version>
-        <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
+        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+        <maven-invoker-plugin.version>3.2.2</maven-invoker-plugin.version>
+        <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-failsafe-plugin.version>2.22.2</maven-surefire-failsafe-plugin.version>
-        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <pgp-maven-plugin.version>1.1</pgp-maven-plugin.version>
         <event-scheduler.version>3.0.1</event-scheduler.version>
@@ -159,6 +162,12 @@
         <contributor>
             <name>https://github.com/kostd</name>
         </contributor>
+        <contributor>
+            <name>Yang Chen</name>
+        </contributor>
+        <contributor>
+            <name>Yun Lemon</name>
+        </contributor>
     </contributors>
 
     <distributionManagement>
@@ -169,6 +178,12 @@
     </distributionManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>json-unit-assertj</artifactId>
+            <version>2.4.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -486,18 +501,22 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.kohsuke</groupId>
-                        <artifactId>pgp-maven-plugin</artifactId>
-                        <version>${pgp-maven-plugin.version}</version>
-                        <configuration>
-                            <secretkey>keyfile:${gpg.key.location}</secretkey>
-                            <passphrase>literal:${gpg.passphrase}</passphrase>
-                        </configuration>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

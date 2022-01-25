@@ -8,27 +8,31 @@ env:
     - secure: RZfD/0Ksr8JYLVxXjkTY2Br5zeX//vQZ+EuvK8jnajoG7Cl468n3o6BtvELt9B7/aAFPO6HFPzqWNjQWFIZ3ts3s51vjwnaW6zszF6apVyQlnqG6mqdJtokezoNXJGpz4AD/+mrskN71HRMVVwSI+xrLInpufUjgw7t27Azczw8=
 
 matrix:
+  fast_finish: true
   allow_failures:
-    - name: Apache JMeter master and Oracle jdk8
-    - name: Test with OpenJDK 13
+    - name: Apache JMeter master and OracleJDK 8
+    - name: Test with OpenJDK 16
+    - name: Test with OpenJDK 17
   include:
-    #    - jdk: oraclejdk9
-    #      script: mvn clean verify
-    #    - jdk: openjdk10
-    #      script: mvn clean verify
-    - name: Test with OpenJDK 11
-      jdk: openjdk11
+    - name: Test with OracleJDK 8
+      jdk: oraclejdk8
       script: mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean verify
-    - name: Test with Oracle jdk11
+    - name: Test with OracleJDK 11
       jdk: oraclejdk11
       script: mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean verify
-    - name: Test with Oracle jdk8
-      jdk: oraclejdk8
+    - name: Test with OpenJDK 11
+      jdk: openjdk11
       script: mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean verify
     - name: Test with OpenJDK 13
       jdk: openjdk13
       script: mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean verify
-    - name: Apache JMeter master and Oracle jdk8
+    - name: Test with OpenJDK 16
+      jdk: openjdk16
+      script: mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean verify
+    - name: Test with OpenJDK 17
+      jdk: openjdk17
+      script: mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean verify
+    - name: Apache JMeter master and OracleJDK 8
       jdk: oraclejdk8
       script:
         - cd ..
@@ -42,3 +46,7 @@ matrix:
 after_success:
   - ./deploy_to_sonatype.sh
   - bash <(curl -s https://codecov.io/bash) -v
+
+cache:
+  directories:
+    - $HOME/.m2

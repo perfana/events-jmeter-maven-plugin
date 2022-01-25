@@ -5,13 +5,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestConfigTest {
@@ -24,7 +24,7 @@ public class TestConfigTest {
         URL configFile = this.getClass().getResource(testConfigFile);
         File testConfigJSON = new File(configFile.toURI());
         TestConfigurationWrapper testConfig = new TestConfigurationWrapper(testConfigJSON, "test-execution");
-        assertThat(testConfig.getFullConfig())
+        assertThatJson(testConfig.getFullConfig())
                 .isEqualTo("{\"executionID\":\"test-execution\",\"jmeterDirectoryPath\":null,\"runtimeJarName\":null,\"resultsOutputIsCSVFormat\":false,\"generateReports\":false,\"resultFilesLocations\":[],\"propertiesMap\":null,\"jmeterWorkingDirectoryPath\":null}");
     }
 
@@ -153,6 +153,6 @@ public class TestConfigTest {
         testConfig.getCurrentTestConfiguration().setJmeterDirectoryPath("/foo/bar/jmeter");
 
         assertThat(testConfig.getCurrentTestConfiguration().getJmeterDirectoryPath()).isEqualTo("/foo/bar/jmeter");
-        assertThat(testConfig.getCurrentTestConfiguration().getJmeterWorkingDirectoryPath()).isEqualTo("/foo/bar/jmeter/bin");
+        assertThat(testConfig.getCurrentTestConfiguration().getJmeterWorkingDirectoryPath().getAbsolutePath()).isEqualTo("/foo/bar/jmeter/bin");
     }
 }

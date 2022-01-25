@@ -1,10 +1,54 @@
 # Changelog
 
-## Version 3.2.0-SNAPSHOT Release Notes (IN PROGRESS)
+## Version 3.6.0-SNAPSHOT Release Notes (IN PROGRESS)
 
 ### Enhancements ###
 
 ### Bug Fixes ###
+
+## Version 3.5.0 Release Notes (9 October 2021)
+
+### Enhancements ###
+
+* Issue [413](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/413) Add option to fail build if the result file is empty using the following config:
+```
+  	<configuration>
+  	  <failBuildIfResultFileIsEmpty>true</failBuildIfResultFileIsEmpty>
+  	</configuration>
+```
+### Bug Fixes ###
+
+* Issue [412](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/412) Upgraded libraries and replaces gmaven-plugin to improve JDK 16/17 support.
+
+## Version 3.4.0 Release Notes (31 March 2021)
+
+### Enhancements ###
+
+* Issue [374](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/374) Make result scanning case insensitive and add the ability to match on case insensitive failure messages in CSV files.  To enable case insensitive scanning for failure messages instead of success criteria use the following config:
+
+		<configuration>
+		  <onlyFailWhenMatchingFailureMessage>true</onlyFailWhenMatchingFailureMessage>
+		  <failureMessages>
+			<failureMessage>Custom failure message!</failureMessage>
+			<failureMessage>Some other failure message</failureMessage>
+		  </failureMessages>
+		</configuration>
+
+### Bug Fixes ###
+
+* Issue [382](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/382) Add the ability to specify a selected configuration on the command line
+
+## Version 3.3.0 Release Notes (23 January 2021)
+
+### Enhancements ###
+
+* Issue [397](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/394) Set default JMeter version to 5.4.1
+
+## Version 3.2.0 Release Notes (4 December 2020)
+
+### Enhancements ###
+
+* Issue [394](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/394) Set default JMeter version to 5.4
 
 ## Version 3.1.2 Release Notes (21 September 2020)
 

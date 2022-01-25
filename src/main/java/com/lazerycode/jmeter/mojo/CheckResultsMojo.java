@@ -1,7 +1,7 @@
 package com.lazerycode.jmeter.mojo;
 
 import com.lazerycode.jmeter.json.TestConfigurationWrapper;
-import com.lazerycode.jmeter.testrunner.ResultScanner;
+import com.lazerycode.jmeter.results.ResultScanner;
 import com.lazerycode.jmeter.testrunner.TestFailureDecider;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -10,10 +10,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Goal that computes successes/failures from CSV or XML results files.<br/>
- * This goal runs within Lifecycle phase {@link LifecyclePhase#VERIFY}.<br/>
+ * Goal that computes successes/failures from CSV or XML results files.<br>
+ * This goal runs within Lifecycle phase {@link LifecyclePhase#VERIFY}.<br>
  * Ensure you set 'scanResultsForSuccessfulRequests' and 'scanResultsForFailedRequests' to true.
  */
 @Mojo(name = "results", defaultPhase = LifecyclePhase.VERIFY)
@@ -49,6 +51,27 @@ public class CheckResultsMojo extends AbstractJMeterMojo {
     protected boolean scanResultsForSuccessfulRequests;
 
     /**
+     * Only search for specific failure messages when scanning results for failed requests (only applied to CSV files)
+     * Defaults to false
+     */
+    @Parameter(defaultValue = "false")
+    protected boolean onlyFailWhenMatchingFailureMessage;
+
+    /**
+     * If the plugin cannot detect any requests in the results file force a build failure
+     * Defaults to false
+     */
+    @Parameter(defaultValue = "false")
+    protected boolean failBuildIfResultFileIsEmpty;
+
+    /**
+     * list of case insensitive failure messages to search for.
+     * (Requires &lt;onlyFailWhenMatchingFailureMessage&gt;true&lt;/onlyFailWhenMatchingFailureMessage&gt; to be set)
+     */
+    @Parameter
+    protected List<String> failureMessages = new ArrayList<>();
+
+    /**
      * Scan JMeter result files for successful, and failed requests/
      *
      * @throws MojoExecutionException Exception
@@ -76,7 +99,9 @@ public class CheckResultsMojo extends AbstractJMeterMojo {
             ResultScanner resultScanner = new ResultScanner(
                     scanResultsForSuccessfulRequests,
                     scanResultsForFailedRequests,
-                    testConfig.getCurrentTestConfiguration().getResultsOutputIsCSVFormat()
+                    testConfig.getCurrentTestConfiguration().getResultsOutputIsCSVFormat(),
+                    onlyFailWhenMatchingFailureMessage,
+                    failureMessages
             );
             for (String resultFileLocation : testConfig.getCurrentTestConfiguration().getResultFilesLocations()) {
                 resultScanner.parseResultFile(new File(resultFileLocation));
@@ -100,6 +125,9 @@ public class CheckResultsMojo extends AbstractJMeterMojo {
                         decider.getErrorPercentage(),
                         decider.getErrorPercentageThreshold()
                 ));
+            }
+            if (resultScanner.getTotalCount() == 0 && failBuildIfResultFileIsEmpty) {
+                throw new MojoFailureException("Failing build because no requests were found in the results file!");
             }
         } else {
             getLog().info(" ");

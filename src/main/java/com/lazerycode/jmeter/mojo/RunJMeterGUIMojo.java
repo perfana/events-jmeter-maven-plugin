@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Goal that runs JMeter in GUI mode.<br/>
+ * Goal that runs JMeter in GUI mode.<br>
  * This goal runs within Lifecycle phase {@link LifecyclePhase#INTEGRATION_TEST}.
  *
  * @author Jarrod Ribble
@@ -54,7 +54,7 @@ public class RunJMeterGUIMojo extends AbstractJMeterMojo {
 
     private void startJMeterGUI(JMeterArgumentsArray testArgs) throws MojoExecutionException {
         JMeterProcessBuilder jmeterProcessBuilder = new JMeterProcessBuilder(jMeterProcessJVMSettings, testConfig.getCurrentTestConfiguration().getRuntimeJarName())
-                .setWorkingDirectory(new File(testConfig.getCurrentTestConfiguration().getJmeterWorkingDirectoryPath()))
+                .setWorkingDirectory(testConfig.getCurrentTestConfiguration().getJmeterWorkingDirectoryPath())
                 .addArguments(testArgs.buildArgumentsArray());
         try {
             final Process process = jmeterProcessBuilder.build().start();
