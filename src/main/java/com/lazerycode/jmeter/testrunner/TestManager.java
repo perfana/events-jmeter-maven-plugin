@@ -3,7 +3,7 @@ package com.lazerycode.jmeter.testrunner;
 import com.lazerycode.jmeter.configuration.JMeterArgumentsArray;
 import com.lazerycode.jmeter.configuration.JMeterProcessJVMSettings;
 import com.lazerycode.jmeter.configuration.RemoteConfiguration;
-import nl.stokpop.eventscheduler.EventScheduler;
+import io.perfana.eventscheduler.EventScheduler;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.utils.io.DirectoryScanner;

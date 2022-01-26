@@ -5,7 +5,7 @@ import com.lazerycode.jmeter.configuration.JMeterProcessJVMSettings;
 import com.lazerycode.jmeter.configuration.ProxyConfiguration;
 import com.lazerycode.jmeter.configuration.RemoteConfiguration;
 import com.lazerycode.jmeter.json.TestConfigurationWrapper;
-import nl.stokpop.eventscheduler.api.config.EventSchedulerConfig;
+import io.perfana.eventscheduler.api.config.EventSchedulerConfig;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;

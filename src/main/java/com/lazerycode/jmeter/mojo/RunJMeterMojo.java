@@ -2,10 +2,10 @@ package com.lazerycode.jmeter.mojo;
 
 import com.lazerycode.jmeter.json.TestConfigurationWrapper;
 import com.lazerycode.jmeter.testrunner.TestManager;
-import nl.stokpop.eventscheduler.EventScheduler;
-import nl.stokpop.eventscheduler.EventSchedulerBuilder;
-import nl.stokpop.eventscheduler.api.EventLogger;
-import nl.stokpop.eventscheduler.api.config.EventSchedulerConfig;
+import io.perfana.eventscheduler.EventScheduler;
+import io.perfana.eventscheduler.EventSchedulerBuilder;
+import io.perfana.eventscheduler.api.EventLogger;
+import io.perfana.eventscheduler.api.config.EventSchedulerConfig;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
