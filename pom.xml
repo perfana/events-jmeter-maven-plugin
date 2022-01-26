@@ -462,6 +462,16 @@
         </profile>
         <profile>
             <id>release</id>
+            <distributionManagement>
+                <repository>
+                    <id>sonatype-nexus</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>sonatype-nexus</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
             <build>
                 <plugins>
                     <plugin>
