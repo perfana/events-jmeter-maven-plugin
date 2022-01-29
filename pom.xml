@@ -3,19 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>oss-parent</artifactId>
-        <groupId>org.sonatype.oss</groupId>
-        <version>9</version>
-    </parent>
-
     <prerequisites>
         <maven>${required.maven.version}</maven>
     </prerequisites>
 
     <groupId>io.perfana</groupId>
     <artifactId>events-jmeter-maven-plugin</artifactId>
-    <version>3.5.0-events-1-SNAPSHOT</version>
+    <version>3.5.0-events-1</version>
     <packaging>maven-plugin</packaging>
 
     <name>Events JMeter Maven Plugin</name>
