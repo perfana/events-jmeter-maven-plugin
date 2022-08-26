@@ -1,7 +1,7 @@
 <img src="https://raw.githubusercontent.com/jmeter-maven-plugin/jmeter-maven-plugin/master/images/full_logo.png" alt="JMeter Maven Plugin"/>
 
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![Build Status](https://app.travis-ci.com/jmeter-maven-plugin/jmeter-maven-plugin.svg?branch=main)](https://app.travis-ci.com/github/jmeter-maven-plugin/jmeter-maven-plugin)
+[![Build Status](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/jmeter-maven-plugin/jmeter-maven-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/jmeter-maven-plugin/jmeter-maven-plugin)
 
 [![GitHub release](https://img.shields.io/github/release/jmeter-maven-plugin/jmeter-maven-plugin.svg?colorB=brightgreen)](http://jmeter.lazerycode.com/)
@@ -19,9 +19,9 @@ See the [CHANGELOG](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/b
 
 All the documentation you need to configure the plugin is available on the [Github Wiki](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/wiki).
 
-The latest version is **3.5.0**, it requires Maven >= **3.5.2** and defaults to **Apache JMeter 5.4.1**.
+The latest version is **3.6.1**, it requires Maven >= **3.5.2** and defaults to **Apache JMeter 5.5**.
 
-This plugin requires a JDK between **8** and **11**. If using Java 11, ensure you use recent version to avoid facing this [Bug](https://bugs.openjdk.java.net/browse/JDK-8210005), also read [This](https://stackoverflow.com/a/52510406/460802). 
+This plugin requires a JDK between **8** and **17**. If using Java 11, ensure you use a recent version to avoid facing this [Bug](https://bugs.openjdk.java.net/browse/JDK-8210005), also read [This](https://stackoverflow.com/a/52510406/460802). 
 
 Running the GUI
 -----
@@ -45,7 +45,7 @@ Add the plugin to the build section of your pom's project :
 <plugin>
     <groupId>com.lazerycode.jmeter</groupId>
     <artifactId>jmeter-maven-plugin</artifactId>
-    <version>3.5.0</version>
+    <version>3.6.1</version>
     <executions>
         <!-- Generate JMeter configuration -->
         <execution>
