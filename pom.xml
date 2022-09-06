@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <required.maven.version>3.5.2</required.maven.version>
-        <revision>3.6.1-events-1</revision>
+        <revision>3.6.1-events-2-SNAPSHOT</revision>
         <supported.java.version>1.8</supported.java.version>
 
         <!--Dependency versions-->
@@ -48,7 +48,7 @@
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <pgp-maven-plugin.version>1.1</pgp-maven-plugin.version>
-        <event-scheduler.version>3.0.2</event-scheduler.version>
+        <event-scheduler.version>3.0.3-SNAPSHOT</event-scheduler.version>
     </properties>
 
     <licenses>
@@ -66,6 +66,16 @@
         <url>https://github.com/perfana/events-jmeter-maven-plugin</url>
         <tag>HEAD</tag>
     </scm>
+
+    <repositories>
+        <!-- needed to test with SNAPSHOT deps -->
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases><enabled>false</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+    </repositories>
 
     <developers>
         <developer>
