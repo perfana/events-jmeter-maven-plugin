@@ -1,12 +1,21 @@
 # Changelog
 
-## Version 3.7.0-SNAPSHOT Release Notes (IN PROGRESS)
+## Version 3.8.0-SNAPSHOT Release Notes (IN PROGRESS)
 
 ### Enhancements ###
 
 ### Bug Fixes ###
 
-## Version 3.6.1 Release Notes (IN PROGRESS)
+## Version 3.7.0 Release Notes (9 December 2022)
+
+### Enhancements ###
+
+### Bug Fixes ###
+
+* Issue [436](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/436) Stream all output into the parent JVM when running the GUI to improve visibility of what is going on under the hood.
+* Issue [428](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/428) Fix display of Successful/Failed requests when running multiple test cases
+
+## Version 3.6.1 Release Notes (9 August 2022)
 
 ### Bug Fixes ###
 
