@@ -43,6 +43,8 @@ public class JMeterArgumentsArray {
     private String reportDirectory;
     private LogLevel overrideRootLogLevel;
 
+    private final List<String> extraOptions = new ArrayList<>();
+
 
     /**
      * Create an instance of JMeterArgumentsArray
@@ -113,6 +115,16 @@ public class JMeterArgumentsArray {
             argumentList.add(PROPFILE2_OPT);
         }
 
+        return this;
+    }
+
+    /**
+     * Add a custom argument to the list of JMeter arguments that will override
+     * the arguments in the property files.
+     * @param argument an argument like -Jtest.port=8080
+     */
+    public JMeterArgumentsArray addExtraArgument(String argument) {
+        extraOptions.add(argument);
         return this;
     }
 
@@ -328,6 +340,7 @@ public class JMeterArgumentsArray {
                     break;
             }
         }
+        argumentsArray.addAll(extraOptions);
         return argumentsArray;
     }
 }

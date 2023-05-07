@@ -1,5 +1,6 @@
 package com.lazerycode.jmeter.mojo;
 
+import com.lazerycode.jmeter.configuration.JMeterArgumentsArray;
 import com.lazerycode.jmeter.json.TestConfigurationWrapper;
 import com.lazerycode.jmeter.testrunner.TestManager;
 import io.perfana.eventscheduler.EventScheduler;
@@ -45,12 +46,28 @@ public class RunJMeterMojo extends AbstractJMeterMojo {
         jMeterProcessJVMSettings.setHeadlessDefaultIfRequired();
         copyFilesInTestDirectory(testFilesDirectory, testFilesBuildDirectory);
 
+
+        JMeterArgumentsArray argumentsArray = computeJMeterArgumentsArray(true,
+                testConfig.getCurrentTestConfiguration().getResultsOutputIsCSVFormat(),
+                testConfig.getCurrentTestConfiguration().getJmeterDirectoryPath());
+
+        // creating the scheduler will also let Perfana plugins initialize the test context, e.g. to get the test run id
         EventScheduler eventScheduler = (eventSchedulerConfig != null && eventSchedulerConfig.isSchedulerEnabled())
-            ? createEventScheduler(eventSchedulerConfig, getLog())
-            : null;
+                ? createEventScheduler(eventSchedulerConfig, getLog())
+                : null;
+
+        if (eventScheduler != null) {
+            // after event scheduler is created, we can use the new Perfana test run id from the /api/init call
+            String newTestRunId = eventScheduler.getEventSchedulerContext().getTestContext().getTestRunId();
+            String origTestRunId = eventSchedulerConfig.getTestConfig().toContext().getTestRunId();
+            if (!origTestRunId.equals(newTestRunId)) {
+                getLog().info("JMeter argument override of testRunId '" + origTestRunId + "' with '-Jtest.testRunId=" + newTestRunId + "'");
+                argumentsArray.addExtraArgument("-Jtest.testRunId=" + newTestRunId);
+            }
+        }
 
         TestManager jMeterTestManager = new TestManager()
-                .setBaseTestArgs(computeJMeterArgumentsArray(true, testConfig.getCurrentTestConfiguration().getResultsOutputIsCSVFormat(), testConfig.getCurrentTestConfiguration().getJmeterDirectoryPath()))
+                .setBaseTestArgs(argumentsArray)
                 .setTestFilesDirectory(testFilesBuildDirectory)
                 .setTestFilesIncluded(testFilesIncluded)
                 .setTestFilesExcluded(testFilesExcluded)
