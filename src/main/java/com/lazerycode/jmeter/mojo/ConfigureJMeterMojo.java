@@ -311,8 +311,17 @@ public class ConfigureJMeterMojo extends AbstractJMeterMojo {
         copyExplicitLibraries(jmeterExtensions, libExtDirectory.toFile(), downloadExtensionDependencies, "extensions");
         copyExplicitLibraries(junitLibraries, libJUnitDirectory.toFile(), downloadLibraryDependencies, "junit libraries");
         copyExplicitLibraries(testPlanLibraries, libDirectory.toFile(), downloadLibraryDependencies, "test plan libraries");
+
+        // inject new Perfana test run id in 'test.testRunId' in user properties
+        String testRunId = eventSchedulerConfig.getTestConfig().toContext().getTestRunId();
+        String replacementTestRunId = propertiesUser.put("test.testRunId", testRunId);
+        if (replacementTestRunId != null && !replacementTestRunId.equals(testRunId)) {
+            getLog().info(">>> Replace existing 'test.testRunId' property in user properties with value: '" + testRunId + "' (was '" + replacementTestRunId + "')");
+        }
+
         getLog().info("Configuring JMeter properties...");
         configurePropertiesFiles();
+
         testConfig.writeResultFilesConfigTo(testConfigFile);
     }
 
