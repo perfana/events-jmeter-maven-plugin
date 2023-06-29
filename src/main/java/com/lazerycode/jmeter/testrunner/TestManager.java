@@ -5,6 +5,8 @@ import com.lazerycode.jmeter.configuration.JMeterProcessJVMSettings;
 import com.lazerycode.jmeter.configuration.RemoteConfiguration;
 import io.perfana.eventscheduler.EventScheduler;
 import com.lazerycode.jmeter.utility.StreamRedirector;
+import io.perfana.eventscheduler.api.SchedulerExceptionHandler;
+import io.perfana.eventscheduler.api.SchedulerExceptionType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.utils.io.DirectoryScanner;
@@ -142,6 +144,8 @@ public class TestManager {
         return this;
     }
 
+    private SchedulerExceptionType schedulerExceptionType = SchedulerExceptionType.NONE;
+
     JMeterArgumentsArray getBaseTestArgs() {
         return baseTestArgs;
     }
@@ -199,10 +203,6 @@ public class TestManager {
     public List<String> executeTests() throws MojoExecutionException {
 
         boolean abortEventScheduler = false;
-
-        if (eventScheduler != null) {
-            eventScheduler.startSession();
-        }
 
         JMeterArgumentsArray thisTestArgs = baseTestArgs;
         List<String> tests = generateTestList();
@@ -277,6 +277,38 @@ public class TestManager {
         jmeterProcessBuilder.addArguments(argumentsArray);
         try {
             final Process process = jmeterProcessBuilder.build().start();
+
+            SchedulerExceptionHandler schedulerExceptionHandler =
+                    new SchedulerExceptionHandler() {
+                        @Override
+                        public void kill(String message) {
+                            LOGGER.info("Killing running process, message: {}", message);
+                            schedulerExceptionType = SchedulerExceptionType.KILL;
+                            process.destroy();
+                        }
+
+                        @Override
+                        public void abort(String message) {
+                            LOGGER.info("Killing running process, message: {}", message);
+                            schedulerExceptionType = SchedulerExceptionType.ABORT;
+                            process.destroy();
+                        }
+
+                        @Override
+                        public void stop(String message) {
+                            LOGGER.info("Stop running process, message: {}", message);
+                            schedulerExceptionType = SchedulerExceptionType.STOP;
+                            process.destroy();
+                        }
+                    };
+
+            if (eventScheduler != null) {
+                LOGGER.info("Adding scheduler exception handler to event scheduler");
+                eventScheduler.addKillSwitch(schedulerExceptionHandler);
+                // start SHOULD be called after adding the scheduler exception handler
+                eventScheduler.startSession();
+            }
+
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 LOGGER.info("Shutdown detected, destroying JMeter process...");
                 LOGGER.info(" ");
@@ -285,10 +317,15 @@ public class TestManager {
                 }
                 process.destroy();
             }));
+
             new Thread(new StreamRedirector(process.getInputStream(), (suppressJMeterOutput ? LOGGER::debug : LOGGER::info))).start();
             new Thread(new StreamRedirector(process.getErrorStream(), LOGGER::error)).start();
             int jMeterExitCode = process.waitFor();
-            if (jMeterExitCode != 0) {
+
+            if (!schedulerExceptionType.equals(SchedulerExceptionType.NONE)) {
+                LOGGER.info("Event scheduler triggered exception: {}, will continue with regular test completion steps.", schedulerExceptionType);
+            }
+            else if (jMeterExitCode != 0) {
                 if (ignoreJVMKilledExitCode && jMeterExitCode == EXIT_CODE_FOR_JVM_KILLED) {
                     LOGGER.warn("JVM has been force killed!");
                     LOGGER.warn("Build failure not triggered due to config settings, however you may want to investigate this");

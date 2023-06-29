@@ -46,7 +46,6 @@ public class RunJMeterMojo extends AbstractJMeterMojo {
         jMeterProcessJVMSettings.setHeadlessDefaultIfRequired();
         copyFilesInTestDirectory(testFilesDirectory, testFilesBuildDirectory);
 
-
         JMeterArgumentsArray argumentsArray = computeJMeterArgumentsArray(true,
                 testConfig.getCurrentTestConfiguration().getResultsOutputIsCSVFormat(),
                 testConfig.getCurrentTestConfiguration().getJmeterDirectoryPath());
