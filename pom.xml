@@ -15,7 +15,7 @@
     <name>Events JMeter Maven Plugin</name>
     <description>
         A plugin to allow you to run Apache JMeter tests with Maven.
-        Forked from jmeter-maven-plugin 3.6.1, this version has test events integration.
+        Forked from jmeter-maven-plugin 3.7.0, this version has test events integration.
     </description>
     <url>https://jmeter.lazerycode.com</url>
 
@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <required.maven.version>3.5.2</required.maven.version>
-        <revision>3.7.0-events-2-SNAPSHOT</revision>
+        <revision>3.7.0-events-2</revision>
         <supported.java.version>11</supported.java.version>
 
         <!--Dependency versions-->
