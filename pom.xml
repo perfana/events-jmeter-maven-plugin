@@ -22,7 +22,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <required.maven.version>3.5.2</required.maven.version>
+        <required.maven.version>3.8.1</required.maven.version>
         <revision>3.7.0-events-2</revision>
         <supported.java.version>11</supported.java.version>
 
