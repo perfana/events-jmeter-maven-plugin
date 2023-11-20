@@ -1,12 +1,13 @@
-name: Release to Maven Central
+name: Release new version to the Maven Central Repository
 on:
   workflow_dispatch:
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Check out code
         uses: actions/checkout@v3
 
       - name: Set tag name env variable
@@ -30,6 +31,12 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_SIGNING_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.9.2
+
       - name: Publish to Apache Maven Central
         run: mvn --batch-mode deploy -Prelease,!integration
         env:

@@ -1,14 +1,22 @@
 # Changelog
 
-## Version 3.8.0-SNAPSHOT Release Notes (IN PROGRESS)
+## Version 3.9.0-SNAPSHOT Release Notes (IN PROGRESS)
 
 ### Enhancements ###
 
 ### Bug Fixes ###
 
-## Version 3.7.0 Release Notes (9 December 2022)
+## Version 3.8.0 Release Notes (11 July 2023)
 
 ### Enhancements ###
+
+* Issue [440](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/440) Default to JMeter 5.6.2.
+
+### Bug Fixes ###
+
+* Issue [439](https://github.com/jmeter-maven-plugin/jmeter-maven-plugin/issues/439) Place maven artifacts in the provided scope.
+
+## Version 3.7.0 Release Notes (9 December 2022)
 
 ### Bug Fixes ###
 

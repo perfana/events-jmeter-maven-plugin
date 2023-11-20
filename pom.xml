@@ -3,6 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <artifactId>oss-parent</artifactId>
+        <groupId>org.sonatype.oss</groupId>
+        <version>9</version>
+    </parent>
+
     <prerequisites>
         <maven>${required.maven.version}</maven>
     </prerequisites>
@@ -15,41 +21,45 @@
     <name>Events JMeter Maven Plugin</name>
     <description>
         A plugin to allow you to run Apache JMeter tests with Maven.
-        Forked from jmeter-maven-plugin 3.7.0, this version has test events integration.
+        Forked from jmeter-maven-plugin 3.8.0, this version has test events integration.
     </description>
     <url>https://jmeter.lazerycode.com</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <required.maven.version>3.5.2</required.maven.version>
-        <revision>3.7.0-events-2</revision>
+        <required.maven.version>3.9.0</required.maven.version>
+        <revision>DEV-SNAPSHOT</revision>
+        <required.maven.version>3.8.1</required.maven.version>
+        <revision>3.8.0-events-1</revision>
         <supported.java.version>11</supported.java.version>
 
         <!--Dependency versions-->
-        <assertj-core.version>3.23.1</assertj-core.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <jackson.version>2.14.1</jackson.version>
-        <json-path.version>2.7.0</json-path.version>
+        <assertj-core.version>3.24.2</assertj-core.version>
+        <commons-io.version>2.13.0</commons-io.version>
+        <jackson.version>2.15.1</jackson.version>
+        <json-path.version>2.8.0</json-path.version>
+        <json-smart.version>2.5.0</json-smart.version>
         <junit.version>4.13.2</junit.version>
-        <logback.version>1.2.11</logback.version>
-        <maven-resolver.version>1.9.2</maven-resolver.version>
-        <mockito-core.version>4.9.0</mockito-core.version>
+        <logback.version>1.2.12</logback.version>
+        <maven-resolver.version>1.9.13</maven-resolver.version>
+        <mockito-core.version>4.11.0</mockito-core.version> <!-- 5.x requires java 11 -->
         <slf4j-api.version>1.7.36</slf4j-api.version>
-        <json-unit-assertj.version>2.36.0</json-unit-assertj.version>
+        <json-unit-assertj.version>2.36.0</json-unit-assertj.version> <!-- 3.00 requires JDK 17-->
 
         <!--Plugin versions-->
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-        <maven-invoker-plugin.version>3.2.2</maven-invoker-plugin.version>
+        <maven-invoker-plugin.version>3.6.0</maven-invoker-plugin.version>
         <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
+        <maven-shared-utils.version>3.4.2</maven-shared-utils.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-surefire-failsafe-plugin.version>2.22.2</maven-surefire-failsafe-plugin.version>
-        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <maven-surefire-failsafe-plugin.version>3.1.2</maven-surefire-failsafe-plugin.version>
+        <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <pgp-maven-plugin.version>1.1</pgp-maven-plugin.version>
-        <event-scheduler.version>4.0.0</event-scheduler.version>
+        <event-scheduler.version>4.0.1</event-scheduler.version>
     </properties>
 
     <licenses>
@@ -182,7 +192,7 @@
             <name>Jonathan Leitschuh</name>
         </contributor>
         <contributor>
-            <name>Serhiiilnytskyi </name>
+            <name>Serhiiilnytskyi</name>
         </contributor>
     </contributors>
 
@@ -198,21 +208,18 @@
     </distributionManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>net.javacrumbs.json-unit</groupId>
-            <artifactId>json-unit-assertj</artifactId>
-            <version>${json-unit-assertj.version}</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- Provided Scope -->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
             <version>${required.maven.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
             <version>${required.maven.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
@@ -220,10 +227,16 @@
             <version>${required.maven.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Normal Scope -->
         <dependency>
             <groupId>org.apache.maven.resolver</groupId>
             <artifactId>maven-resolver-api</artifactId>
             <version>${maven-resolver.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-shared-utils</artifactId>
+            <version>${maven-shared-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -256,11 +269,22 @@
             <version>${json-path.version}</version>
         </dependency>
         <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>${json-smart.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.perfana</groupId>
             <artifactId>event-scheduler</artifactId>
             <version>${event-scheduler.version}</version>
         </dependency>
         <!--Test Dependencies-->
+        <dependency>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>json-unit-assertj</artifactId>
+            <version>${json-unit-assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -319,7 +343,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>${required.maven.version}</version>
                     <executions>
                         <execution>
                             <id>mojo-descriptor</id>
@@ -379,7 +403,9 @@
                             <postBuildHookScript>verify</postBuildHookScript>
                             <streamLogs>true</streamLogs>
                             <showErrors>true</showErrors>
-                            <mavenOpts>${argLine} -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn</mavenOpts>
+                            <mavenOpts>${argLine}
+                                -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+                            </mavenOpts>
                             <properties>
                                 <jmeter.version>${jmeter.version}</jmeter.version>
                             </properties>

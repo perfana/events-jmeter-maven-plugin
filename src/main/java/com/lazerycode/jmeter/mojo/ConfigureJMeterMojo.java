@@ -72,7 +72,7 @@ public class ConfigureJMeterMojo extends AbstractJMeterMojo {
      * if you change this version number the list of artifacts required to run JMeter may change.
      * If this happens you will need to override the &lt;jmeterArtifacts&gt; element.
      */
-    @Parameter(property = "jmeter.version", defaultValue = "5.5")
+    @Parameter(property = "jmeter.version", defaultValue = "5.6.2")
     private String jmeterVersion;
 
     /**
@@ -102,7 +102,7 @@ public class ConfigureJMeterMojo extends AbstractJMeterMojo {
 
     /**
      * A list of artifacts that the plugin should ignore.
-     * This would be useful if you don't want specific dependencies brought down by JMeter (or any uzsed defined artifacts) copied into the JMeter directory structure.
+     * This would be useful if you don't want specific dependencies brought down by JMeter (or any used defined artifacts) copied into the JMeter directory structure.
      * <br>
      * &lt;ignoredArtifacts&gt;
      * &nbsp;&nbsp;&lt;artifact&gt;org.bouncycastle:bcprov-jdk15on:1.49&lt;/artifact&gt;

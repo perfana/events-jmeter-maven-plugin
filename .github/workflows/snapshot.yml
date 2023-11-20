@@ -17,7 +17,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Set up Sonatype Snapshots Repository
+      - name: Set up Java/Maven Central Repository
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -27,6 +27,11 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.9.2
 
       - name: Publish to Sonatype Snapshots Repository
         run: mvn clean deploy -DskipTests
