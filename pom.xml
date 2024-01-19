@@ -30,7 +30,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <required.maven.version>3.9.2</required.maven.version>
         <revision>DEV-SNAPSHOT</revision>
-        <revision>3.8.0-events-1</revision>
+        <revision>3.8.0-events-2-SNAPSHOT</revision>
         <supported.java.version>11</supported.java.version>
 
         <!--Dependency versions-->
@@ -58,7 +58,7 @@
         <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <pgp-maven-plugin.version>1.1</pgp-maven-plugin.version>
-        <event-scheduler.version>4.0.1</event-scheduler.version>
+        <event-scheduler.version>4.0.3</event-scheduler.version>
     </properties>
 
     <licenses>
